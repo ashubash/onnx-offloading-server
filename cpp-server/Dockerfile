@@ -7,6 +7,7 @@ FROM ubuntu:22.04
 WORKDIR /app
 
 # Step 3: Install build-time dependencies
+# Force rebuild to install curl
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
