@@ -28,6 +28,8 @@ RUN which curl || echo "CURL NOT FOUND"
 RUN ./download_deps.sh
 
 # Step 8: Build the application using CMake
+# BRUTE FORCE: Remove any pre-existing executable from source directory
+RUN rm -f /app/onnx_cpp_server || true
 RUN mkdir build && \
     cd build && \
     cmake .. -DCMAKE_PREFIX_PATH=/app/deps && \
