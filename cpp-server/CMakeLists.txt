@@ -39,6 +39,7 @@ add_executable(onnx_cpp_server src/main.cpp)
 # --- Include Directories ---
 target_include_directories(onnx_cpp_server PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/nlohmann
 )
 
 # --- Link Libraries ---
