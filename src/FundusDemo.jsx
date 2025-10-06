@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import useCppServerInference from "./hooks/useCppServerInference"; // Use the new server hook
 
 const CLASSES = ["Normal", "Glaucoma", "Myopia", "Diabetes"];
-const API_URL = process.env.REACT_APP_API_URL || 'http://13.211.167.122:8080';
+const API_URL = 'http://13.211.167.122:8080';
 
 export default function FundusDemo() {
   const { runInference, loading: inferenceLoading, error: inferenceError } = useCppServerInference(API_URL);
