@@ -37,10 +37,6 @@ struct InferenceResponse {
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(InferenceResponse, output)
 };
 
-// Use NLOHMANN_DEFINE_TYPE_INTRUSIVE for easy serialization
-NLOHMANN_DEFINE_TYPE_INTRUSIVE(InferenceRequest, npy_url)
-NLOHMANN_DEFINE_TYPE_INTRUSIVE(InferenceResponse, output)
-
 // --- Function to Initialize ONNX Runtime ---
 void initialize_onnx() {
     std::cout << "Initializing ONNX Runtime..." << std::endl;
