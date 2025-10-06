@@ -1,0 +1,55 @@
+# .github/workflows/deploy-server.yml
+
+name: Deploy C++ Server
+
+# Trigger this workflow on pushes to the main branch,
+# but only if files in the cpp-server directory have changed
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'cpp-server/**'
+
+jobs:
+  build-and-deploy:
+    # Use the latest Ubuntu runner provided by GitHub
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out your repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Log in to Docker Hub using your credentials
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Step 3: Build the Docker image and push it to Docker Hub
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./cpp-server # The path to the Dockerfile
+          push: true
+          tags: ashutoshlabh02/onnx-server:latest # IMPORTANT: Change this!
+
+      # Step 4: Deploy the new image to your VPS via SSH
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.HOST }} # Your server's IP address
+          username: ${{ secrets.USERNAME }} # e.g., 'root'
+          key: ${{ secrets.SSH_KEY }} # Your private SSH key
+          script: |
+            # Stop and remove the old container (if it exists)
+            docker stop onnx-server-container || true
+            docker rm onnx-server-container || true
+
+            # Pull the new image from Docker Hub
+            docker pull ashutoshlabh02/onnx-server:latest # IMPORTANT: Change this!
+
+            # Run the new container in detached mode
+            docker run -d --name onnx-server-container -p 8080:8080 --restart unless-stopped ashutoshlabh02/onnx-server:latest # IMPORTANT: Change this!
