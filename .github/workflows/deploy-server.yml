@@ -34,7 +34,7 @@ jobs:
         with:
           context: ./cpp-server # The path to the Dockerfile
           push: true
-          tags: ashutoshlabh02/onnx-server:latest # IMPORTANT: Change this!
+          tags: ashutoshlabh02/onnx-server:latest
 
       # Step 4: Deploy the new image to your VPS via SSH
       - name: Deploy to server
@@ -49,7 +49,7 @@ jobs:
             docker rm onnx-server-container || true
 
             # Pull the new image from Docker Hub
-            docker pull ashutoshlabh02/onnx-server:latest # IMPORTANT: Change this!
+            docker pull ashutoshlabh02/onnx-server:latest
 
-            # Run the new container in detached mode
-            docker run -d --name onnx-server-container -p 8080:8080 --restart unless-stopped ashutoshlabh02/onnx-server:latest # IMPORTANT: Change this!
+            # Run the new container in detached mode with the correct environment variable
+            docker run -d --name onnx-server-container -p 8080:8080 --restart unless-stopped -e LD_LIBRARY_PATH=/app/deps/onnxruntime-linux-x64-1.15.1/lib ashutoshlabh02/onnx-server:latest
