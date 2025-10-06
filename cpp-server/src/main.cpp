@@ -50,18 +50,34 @@ void initialize_onnx() {
     std::cout << "Model loaded successfully from: " << model_path << std::endl;
 
     Ort::AllocatorWithDefaultOptions allocator;
-    input_names.clear(); output_names.clear();
-    size_t num_input_nodes = ort_session->GetInputCount();
-    input_names.reserve(num_input_nodes);
-    for (size_t i = 0; i < num_input_nodes; i++) {
-        char* input_name = ort_session->GetInputName(i, allocator);
-        input_names.push_back(input_name);
+
+    // --- Use the new API to get input/output names ---
+    std::vector<std::string> input_names_vec;
+    std::vector<std::string> output_names_vec;
+
+    // Get input names
+    Ort::AllocatedStringPtr input_name_ptr = ort_session->GetInputNameAllocated(0, allocator);
+    input_names_vec.push_back(input_name_ptr.get());
+
+    // Get output names
+    Ort::AllocatedStringPtr output_name_ptr = ort_session->GetOutputNameAllocated(0, allocator);
+    output_names_vec.push_back(output_name_ptr.get());
+
+    // --- Convert std::strings to C-style char* for the run call ---
+    // We need to store the string data to keep it alive
+    static std::vector<std::string> input_names_storage = std::move(input_names_vec);
+    static std::vector<std::string> output_names_storage = std::move(output_names_vec);
+
+    input_names.clear();
+    output_names.clear();
+    input_names.reserve(input_names_storage.size());
+    output_names.reserve(output_names_storage.size());
+
+    for (const auto& name : input_names_storage) {
+        input_names.push_back(name.c_str());
     }
-    size_t num_output_nodes = ort_session->GetOutputCount();
-    output_names.reserve(num_output_nodes);
-    for (size_t i = 0; i < num_output_nodes; i++) {
-        char* output_name = ort_session->GetOutputName(i, allocator);
-        output_names.push_back(output_name);
+    for (const auto& name : output_names_storage) {
+        output_names.push_back(name.c_str());
     }
 }
 
