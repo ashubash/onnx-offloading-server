@@ -64,7 +64,7 @@ target_link_libraries(onnx_cpp_server PRIVATE
 
 # Copy model to build directory
 configure_file(
-    models/student_model_verified (1).onnx
-    ${CMAKE_CURRENT_BINARY_DIR}/models/student_model_verified (1).onnx
+    models/student_model_verified.onnx
+    ${CMAKE_CURRENT_BINARY_DIR}/models/student_model_verified.onnx
     COPYONLY
 )
