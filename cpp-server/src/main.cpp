@@ -26,12 +26,15 @@ std::vector<const char*> input_names;
 std::vector<const char*> output_names;
 
 // --- JSON Request/Response Structures ---
+// --- JSON Request/Response Structures ---
 struct InferenceRequest {
     std::string npy_url;
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(InferenceRequest, npy_url)
 };
 
 struct InferenceResponse {
     std::vector<float> output;
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(InferenceResponse, output)
 };
 
 // Use NLOHMANN_DEFINE_TYPE_INTRUSIVE for easy serialization
