@@ -8,6 +8,25 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Set the path to the downloaded dependency
 set(ONNXRUNTIME_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/deps")
 
+
+# --- Find libcurl ---
+find_package(CURL REQUIRED)
+
+# Add executable
+add_executable(onnx_cpp_server src/main.cpp)
+
+# Include directories
+target_include_directories(onnx_cpp_server PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+# Link libraries
+target_link_libraries(onnx_cpp_server PRIVATE
+    onnxruntime
+    CURL::libcurl  # Add libcurl here
+    pthread
+)
+
 # Determine the correct directory name based on the OS
 if(WIN32)
     set(ONNXRUNTIME_PATH "${ONNXRUNTIME_ROOT}/onnxruntime-win-x64-1.15.1")
