@@ -7,7 +7,6 @@ FROM ubuntu:22.04
 WORKDIR /app
 
 # Step 3: Install build-time dependencies
-# Force rebuild to install curl
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
@@ -22,17 +21,20 @@ RUN chmod +x download_deps.sh
 # Step 5: Copy the rest of the application code into the container
 COPY . .
 
-# Step 6: Run the script to download ONNX Runtime
+# Step 6: DEBUG: Check if curl is installed
+RUN which curl || echo "CURL NOT FOUND"
+
+# Step 7: Run the script to download ONNX Runtime
 RUN ./download_deps.sh
 
-# Step 7: Build the application using CMake
+# Step 8: Build the application using CMake
 RUN mkdir build && \
     cd build && \
     cmake .. -DCMAKE_PREFIX_PATH=/app/deps && \
     make -j$(nproc)
 
-# Step 8: Expose the port the app runs on
+# Step 9: Expose the port the app runs on
 EXPOSE 8080
 
-# Step 9: Command to run the executable when the container starts
-CMD ["./build/onnx_offloading_server"]
+# Step 10: Command to run the executable when the container starts
+CMD ["./build/onnx_cpp_server"]
